@@ -1,0 +1,66 @@
+{% extends "vendor/vendor_base.html" %}
+{% block content %}
+<div class="container mt-5">
+  <div class="text-center mb-4">
+    <h1 class="display-5 fw-bold">Partner with Us</h1>
+    <p class="lead">Grow your hotel business by joining our platform</p>
+  </div>
+
+  <div class="row g-4">
+    <!-- Advantage 1 -->
+    <div class="col-md-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-body text-center">
+          <h5 class="card-title">Increased Bookings</h5>
+          <p class="card-text">Reach thousands of customers daily and maximize your room occupancy with real-time exposure.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Advantage 2 -->
+    <div class="col-md-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-body text-center">
+          <h5 class="card-title">Technology Support</h5>
+          <p class="card-text">Get access to our hotel management dashboard, analytics, pricing tools, and instant notifications.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Advantage 3 -->
+    <div class="col-md-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-body text-center">
+          <h5 class="card-title">Brand Visibility</h5>
+          <p class="card-text">Become a part of a trusted brand and benefit from national marketing and social media campaigns.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="text-center mt-5">
+    <a href="{% url 'vendor_dashboard' %}" class="btn btn-success btn-lg me-3">dashboard</a>
+    <a href="{% url 'addhotel' %}" class="btn btn-outline-primary btn-lg">Join now</a>
+  </div>
+</div>
+
+{% for hotel in hotels %}
+  <div class="col-md-3">
+    <div class="card shadow" style="width: 18rem;">
+      <img src="/media/{{hotel.hotel_images.first.image}}" class="card-img-top" alt="...">
+      <div class="card-body">
+        <h5 class="card-title">{{hotel.hotel_name}}</h5>
+        <p class="card-text">{{hotel.hotel_description}}</p>
+
+        {% for amenetie in hotel.ameneties.all %}
+          <span class="badge text-bg-primary">{{amenetie.name}}</span>
+        {% endfor %}
+      </div>
+      <a href="{% url 'upload_images' hotel.hotel_slug %}" class="btn btn-success">Image</a>
+      <a href="#" class="btn btn-warning">Edit</a>
+    </div>
+  </div>
+{% endfor %}
+
+</div>
+{% endblock %}

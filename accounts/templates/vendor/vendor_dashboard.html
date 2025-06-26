@@ -1,0 +1,358 @@
+{% extends "vendor/vendor_base.html" %}
+
+{% block content %}
+
+<div class="container mt-8 px-4">
+    <div class="add-hotel-container">
+        <a href="{% url 'addhotel' %}" class="add-hotel-btn">Add New Hotel</a>
+    </div>
+    <h2 class="hotel-list-title">Your Hotels</h2>
+    {% include "utils/alerts.html" %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  
+    
+   <script>
+        function confirmAndRedirect() {
+        const select = document.getElementById("hotelSelect");
+        const selectedSlug = select.value;
+
+        if (!selectedSlug) {
+        alert("Please select a hotel.");
+        return false;
+        }
+
+        const confirmDelete = confirm("Are you sure you want to delete this hotel?");
+        if (confirmDelete) {
+        const baseUrl = document.getElementById("hotelSelect").dataset.url;
+        window.location.href = baseUrl.replace("REPLACE_SLUG", selectedSlug);
+        }
+        return false; // prevent form submit
+        }
+    </script>   
+    </head>
+    <body class="container mt-5">
+
+    <h3>Delete a Hotel</h3>
+
+    <div class="card p-4" style="max-width: 500px;">
+        <div class="mb-3">
+        <label for="hotelSelect" class="form-label">Select Hotel</label>
+        <select class="form-select" id="hotelSelect"
+              data-url="{% url 'delete_hotel' 'REPLACE_SLUG' %}" required>
+            {% for hotel in hotels %}
+            <option value="{{ hotel.hotel_slug }}">{{ hotel.hotel_name }}</option>
+            {% endfor %}
+        </select>
+        </div>
+
+        <button class="btn btn-danger" onclick="return confirmAndRedirect();">
+        Delete Hotel
+        </button>
+    </div>
+    
+
+
+
+
+    <div class="hotel-grid">
+        {% for hotel in hotels %}
+        <div class="hotel-card">
+            <div class="hotel-image-container">
+                <img src="/media/{{ hotel.hotel_images.first.image }}" class="hotel-image" alt="{{ hotel.hotel_name }}">
+                <div class="hotel-name-overlay">
+                    <h5 class="hotel-name">{{ hotel.hotel_name }}</h5>
+                </div>
+            </div>
+            <div class="hotel-card-content">
+                <p class="hotel-description">{{ hotel.hotel_description }}</p>
+            {% if hotel.amenities.all %}
+            <h5>Hotel amenities</h5>
+            {% endif %}
+
+            {% for amenity in hotel.amenities.all %}
+                <div class="amenity-box">{{ amenity.amenity_name }}</div>
+            {% endfor %}
+            <div class="hotel-price">
+                <strong>Price:</strong> ₹{{ hotel.hotel_price }}{% if hotel.hotel_offer_price %} <span class="offer-price">Offer: ₹{{ hotel.hotel_offer_price }}</span>{% endif %}
+            </div>
+            <div class="hotel-location">
+                <strong>Location:</strong> {{ hotel.hotel_location }}
+            </div>
+            <div class="bookings-container">
+                <h6 class="bookings-title">Bookings</h6>
+                {% if hotel.bookings.all %}
+                <ul class="bookings-list">
+                    {% for booking in hotel.bookings.all %}
+                    <li class="booking-item">
+                            <span>{{ booking.booking_user }} - {{ booking.booking_start_date|date:"d M Y" }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p class="no-bookings">No bookings yet.</p>
+                    {% endif %}
+                </div>
+                <div class="hotel-actions">
+                    <a href="{% url 'upload_images' hotel.hotel_slug %}" class="action-btn upload-btn">Upload Images</a>
+                    <a href="{% url 'edit_hotel' hotel.hotel_slug %}" class="action-btn edit-btn">Edit Hotel</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.add-hotel-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+.add-hotel-btn {
+    display: inline-block;
+    background-color: #28a745;
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.add-hotel-btn:hover {
+    background-color: #218838;
+    transform: scale(0.98);
+}
+
+.hotel-list-title {
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+    color: #333;
+    margin-bottom: 2rem;
+}
+
+.hotel-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: 1rem;
+}
+
+.hotel-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hotel-card:hover {
+    transform: scale(0.95);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+}
+
+.hotel-image-container {
+    position: relative;
+    width: 200px;
+    flex-shrink: 0;
+}
+
+.hotel-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.hotel-name-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 40px;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), transparent);
+}
+
+.hotel-name {
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 0.6rem;
+    margin: 0;
+}
+
+.hotel-card-content {
+    flex: 1;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.hotel-description {
+    font-size: 0.85rem;
+    color: #555;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+{% comment %} .amenities-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+} {% endcomment %}
+.amenity-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #e6f0ff; /* light blue box */
+  color: #003366; /* dark text */
+  padding: 6px 10px;
+  margin: 4px;
+  border-radius: 8px;
+  font-size: 14px;
+  border: 1px solid #99c2ff;
+  transition: background-color 0.2s ease;
+  text-decoration: none;
+}
+
+.amenity-box:hover {
+  background-color: #cce0ff;
+}
+
+.amenity-icon {
+  margin-right: 6px;
+}
+
+{% comment %} .amenity-badge {
+    background-color: #e7f0ff;
+    color: #1e40af;
+    font-size: 0.7rem;
+    font-weight: 500;
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+}  {% endcomment %}
+
+.bookings-container {
+    flex: 1;
+}
+
+.bookings-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.3rem;
+}
+
+.bookings-list {
+    list-style: none;
+    padding: 0;
+    max-height: 80px;
+    overflow-y: auto;
+}
+
+.booking-item {
+    font-size: 0.8rem;
+    color: #444;
+    margin-bottom: 0.2rem;
+}
+
+.no-bookings {
+    font-size: 0.8rem;
+    color: #888;
+    font-style: italic;
+}
+
+.hotel-actions {
+    display: flex;
+    gap: 0.4rem;
+}
+
+.action-btn {
+    flex: 1;
+    text-align: center;
+    padding: 0.5rem;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.upload-btn {
+    background-color: #28a745;
+    color: white;
+}
+
+.upload-btn:hover {
+    background-color: #218838;
+}
+
+.edit-btn {
+    background-color: #ffc107;
+    color: white;
+}
+
+.edit-btn:hover {
+    background-color: #e0a800;
+}
+
+@media (max-width: 640px) {
+    .hotel-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .hotel-card {
+        flex-direction: column;
+    }
+
+    .hotel-image-container {
+        width: 100%;
+        height: 150px;
+    }
+
+    .hotel-actions {
+        flex-direction: column;
+    }
+
+    .action-btn {
+        width: 100%;
+    }
+}
+.hotel-delete-box {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #ffe6e6;
+      color: #800000;
+      padding: 12px 16px;
+      margin: 8px 0;
+      border-radius: 10px;
+      font-size: 16px;
+      border: 1px solid #cc0000;
+    }
+
+.hotel-name {
+      font-weight: bold;
+    }
+
+</style>
+
+
+</form>
+</div>
+
+{% endblock content %}
+

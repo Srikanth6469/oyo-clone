@@ -1,0 +1,77 @@
+{% extends "vendor/vendor_base.html" %}
+
+{% block content %}
+
+<div class="container mt-5 pt-5 pb-5">
+  <div class="col-6 mx-auto card shadow p-4" style="border:none">
+    <h2 class="mb-4">Add Hotel</h2>
+    <!-- Choices.js CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+
+<!-- Choices.js JS -->
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
+
+    <form method="POST">
+      {% csrf_token %}
+
+      <!-- Hotel Name -->
+      <div class="mb-3">
+        <label class="form-label">Hotel Name</label>
+        <input type="text" name="hotel_name" class="form-control" required>
+      </div>
+
+      <!-- Hotel Description -->
+      <div class="mb-3">
+        <div class="form-floating">
+          <textarea name="hotel_description" class="form-control" placeholder="Leave a comment here" id="floatingTextarea" style="height: 100px;"></textarea>
+          <label for="floatingTextarea">Hotel Description</label>
+        </div>
+      </div>
+
+      <!-- Hotel Price -->
+      <div class="mb-3">
+        <label class="form-label">Hotel Price</label>
+        <input type="number" name="hotel_price" class="form-control" required>
+      </div>
+
+      <!-- Hotel Offer Price -->
+      <div class="mb-3">
+        <label class="form-label">Hotel Offer Price</label>
+        <input type="number" name="hotel_offer_price" class="form-control">
+      </div>
+
+      <!-- Hotel Location -->
+      <div class="mb-3">
+        <label class="form-label">Hotel Location</label>
+        <input type="text" name="hotel_location" class="form-control" required>
+      </div>
+
+      <!-- Hotel Amenities -->
+      <div class="mb-3">
+        <label class="form-label">Hotel Amenities</label>
+        <select id="amenitiesDropdown" name="hotel_amenities[]" multiple>
+          {% for amenity in amenities %}
+            <option value="{{ amenity.id }}">{{ amenity.amenity_name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+
+      <!-- Submit Button -->
+      <button type="submit" class="btn btn-primary w-100">Submit</button>
+    </form>
+  </div>
+</div>
+<script>
+  const amenitiesDropdown = new Choices('#amenitiesDropdown', {
+    removeItemButton: true,
+    placeholderValue: 'Select amenities',
+    searchPlaceholderValue: 'Search amenities...',
+    shouldSort: false
+  });
+</script>
+
+
+
+{% endblock %}

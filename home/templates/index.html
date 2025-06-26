@@ -1,0 +1,92 @@
+{% extends "utils/base.html" %}
+{% block start %}
+<div class="container mt-5 pt-5 pb-5">
+
+  <!-- 🔍 Search + Sort Bar -->
+  <div class="col-md-10 mx-auto mb-4">
+    <form class="row g-2 align-items-center" method="GET">
+      <div class="col-sm-4">
+        <input type="text" name="search" class="form-control" placeholder="Search by name or location" value="{{ request.GET.search }}">
+      </div>
+      <div class="col-sm-3">
+        <select class="form-select" name="sort_by">
+          <option value="">Sort by</option>
+          <option value="sort_low" {% if request.GET.sort_by == 'sort_low' %}selected{% endif %}>Price: Low to High</option>
+          <option value="sort_high" {% if request.GET.sort_by == 'sort_high' %}selected{% endif %}>Price: High to Low</option>
+        </select>
+      </div>
+      <div class="col-sm-3">
+        <button type="submit" class="btn btn-warning w-100">Search</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- 🏨 Hotel Cards -->
+  <div class="row g-4">
+    {% for hotel in hotels %}
+      <div class="col-md-6 col-lg-4 col-xl-3">
+        <a href="{% url 'hotel_details' hotel.hotel_slug %}" class="text-decoration-none text-dark">
+          <div class="card shadow-sm h-100 border-0">
+
+            <!-- 🖼 Hotel Image -->
+            {% if hotel.hotel_images.first %}
+              <img src="/media/{{ hotel.hotel_images.first.image }}" class="card-img-top" style="height: 180px; object-fit: cover;">
+            {% else %}
+              <img src="https://via.placeholder.com/300x180.png?text=No+Image" class="card-img-top" style="height: 180px; object-fit: cover;">
+            {% endif %}
+
+            <div class="card-body">
+              <h5 class="card-title">{{ hotel.hotel_name }}</h5>
+
+              <!-- 💰 Prices -->
+              <div class="mb-2">
+                <span class="badge bg-danger">₹{{ hotel.hotel_price }}</span>
+                <span class="badge bg-success"> Offer. ₹{{ hotel.hotel_offer_price }}</span>
+              </div>
+
+              <!-- 📍 Location -->
+              <p class="text-muted mb-1">
+                <i class="bi bi-geo-alt-fill"></i> {{ hotel.hotel_location }}
+              </p>
+
+              <!-- 🛎 Dynamic Amenities -->
+              <div class="d-flex flex-wrap gap-1">
+                {% for amenity in hotel.amenities.all %}
+                  <span class="badge bg-primary">{{ amenity.aminity_name }}</span>
+                {% empty %}
+                  <span class="text-muted">No amenities</span>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+
+  <!-- 🔽 Pagination -->
+  <div class="mt-5 d-flex justify-content-center">
+    {% if hotels.has_other_pages %}
+      <ul class="pagination">
+        {% if hotels.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ hotels.previous_page_number }}">&laquo;</a>
+          </li>
+        {% endif %}
+
+        {% for page_num in hotels.paginator.page_range %}
+          <li class="page-item {% if hotels.number == page_num %}active{% endif %}">
+            <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+          </li>
+        {% endfor %}
+
+        {% if hotels.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ hotels.next_page_number }}">&raquo;</a>
+          </li>
+        {% endif %}
+      </ul>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

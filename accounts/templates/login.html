@@ -1,0 +1,52 @@
+
+{% extends "utils/base.html" %}
+
+{% block start %}
+
+
+<div class="container mt-5 pt-5 pb-5">
+
+    <div class="col-6 mx-auto card shadow p-4" style="border:none">
+        <form method="POST" action="{% url 'login' %}">
+            <div class="mb-3">
+            {% csrf_token %}
+            <h2 class="text-center">Login</h2>
+            <hr>
+            <div class="mb-3">
+              {% include "utils/alerts.html" %}
+              <label for="exampleInputEmail1" class="form-label">Email address</label>
+              <input type="email" class="form-control" id="exampleInputEmail1" name="email" aria-describedby="emailHelp">
+              <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+            </div>
+            <div class="mb-3">
+              <label for="exampleInputPassword1" class="form-label">Password</label>
+              <input type="password" class="form-control" id="exampleInputPassword1" name="password">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <div class="mt-3">
+                <p>Don't have an account? <a href="{% url 'registration' %}">Register here</a></p>
+                <button  type="button" class="btn btn-success" onclick="sendOtp()">Login With OTP</button>
+            </div>  
+          </form>
+    </div>
+
+    </div>
+
+<script>
+// Function to send OTP to the provided email
+function sendOtp() {
+  var email = document.getElementById('exampleInputEmail1').value;
+  
+  if (email === "") {
+    alert("Email cannot be blank");
+    return; // Stop execution if email is empty
+  }
+
+  // Optionally encode the email to avoid issues with special characters
+  window.location.href = `/accounts/send_otp/${encodeURIComponent(email)}/`;
+}
+</script>
+
+{% endblock %}
+

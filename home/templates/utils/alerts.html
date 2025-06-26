@@ -1,0 +1,11 @@
+{% if messages %}
+{% load static %}
+
+{% for message in messages %}
+    <div class="alert alert-{{ message.tags|default:'success' }}" role="alert">
+        <ul>
+            <li>{{ message }}</li>
+        </ul>
+    </div>
+{% endfor %}
+{% endif %}

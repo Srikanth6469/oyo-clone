@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Vendor Dashboard | OYO CLONE</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+      body {
+        background-color:rgb(250, 246, 246);
+      }
+    </style>
+  </head>
+  <body>
+    {% include "vendor/vendor_navbar.html" %}
+
+    <div class="container mt-5 pt-5 pb-5">
+
+      {% block content %}
+      <!-- Page-specific content goes here -->
+      {% endblock %}
+    </div>
+
+    {% block scripts %}
+    <script>
+      console.log('Vendor_Dashboard Loaded');
+    </script>
+    {% endblock %}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-kP18vEFbUIGXtVAv0Tr15V4NQq82HeEIfGBu0HxjKLRCBlXtKdQaW9nX1uLKocJG"
+      crossorigin="anonymous"></script>
+  </body>
+</html>
