@@ -1,7 +1,6 @@
 import email
 from django.contrib.auth.models import User
 from django.shortcuts import render ,redirect,get_object_or_404
-from flask import request
 from .models import HotelUser, HotelVendor, Hotel, Amenity , HotelImages
 from django.db.models import Q
 from django.contrib import messages 
