@@ -50,6 +50,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+
 ]
 
 ROOT_URLCONF = "oyo_clone.urls"
@@ -71,8 +73,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "oyo_clone.wsgi.application"
-import os
-load_dotenv()
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 DATABASES = {
@@ -151,3 +151,9 @@ DEFAULT_FROM_EMAIL = 'srikanthreddy232002@gmail.com'
 # AUTHENTICATION_BACKENDS = [
 #     'accounts.backends.HotelAuthBackend',
 # ]
+import os
+
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
+SECRET_KEY = os.getenv('SECRET_KEY', 'fallback-key')
+
+ALLOWED_HOSTS = ['.onrender.com']
